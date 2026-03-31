@@ -267,8 +267,3 @@ for category, dashboards in categories_to_show:
     else:
         st.info("Nenhum dashboard disponível para esta área no momento.")
 
-# Rodapé informativo
-st.caption(
-    "Os cards aceitam miniaturas por URL (http/https) ou caminho local (ex.: preview/meu_dashboard.png). "
-    "Se o arquivo não existir, o app usa um placeholder automaticamente."
-)
