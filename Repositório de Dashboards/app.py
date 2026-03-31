@@ -98,23 +98,6 @@ DASHBOARDS = {
     "Whole Goods": [
         
     ],
-    # Exemplo de novas áreas (descomente e ajuste conforme necessário)
-    # "Máquinas": [
-    #     {
-    #         "title": "Performance de Máquinas",
-    #         "description": "Análise de eficiência e downtime.",
-    #         "url": "https://exemplo.com/machines",
-    #         "thumbnail": "preview/machines.png",
-    #     }
-    # ],
-    # "Peças": [
-    #     {
-    #         "title": "Estoque de Peças",
-    #         "description": "Giro e disponibilidade.",
-    #         "url": "https://exemplo.com/parts",
-    #         "thumbnail": "preview/parts.png",
-    #     }
-    # ],
 }
 
 # ------------------------------------------------------------
