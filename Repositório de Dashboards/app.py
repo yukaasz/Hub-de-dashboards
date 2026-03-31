@@ -46,7 +46,6 @@ def resolve_thumbnail_source(thumbnail: str) -> str:
     file_path = base_dir / thumbnail
 
     if not file_path.exists() or not file_path.is_file():
-        # Se não existir, gera placeholder
         return make_preview_data_uri("Prévia", accent="#6b7280")
 
     mime_type, _ = mimetypes.guess_type(file_path.name)
@@ -56,7 +55,6 @@ def resolve_thumbnail_source(thumbnail: str) -> str:
 
 def render_dashboard_card(dashboard: dict) -> None:
     """Renderiza um card de dashboard com thumbnail de prévia e link externo."""
-    # Escapa a descrição para evitar quebra de HTML
     description = dashboard['description'].replace('"', '&quot;')
     st.markdown(
         f"""
@@ -84,7 +82,7 @@ def render_dashboard_grid(dashboards: list[dict], columns_count: int = 4) -> Non
                     render_dashboard_card(row[idx])
 
 # ------------------------------------------------------------
-# Definição dos dashboards (categorias e itens)
+# Definição dos dashboards
 # ------------------------------------------------------------
 DASHBOARDS = {
     "Parts & Services": [
@@ -101,29 +99,26 @@ DASHBOARDS = {
             "thumbnail": "preview/Analise Risco de Churn.png",
         },
     ],
-    "Whole Goods": [
-        # Adicione aqui os dashboards da área "Whole Goods"
-    ],
+    "Whole Goods": [],
 }
 
 # ------------------------------------------------------------
-# CSS personalizado (adaptável a tema claro/escuro)
+# CSS personalizado
 # ------------------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Usa variáveis de tema do Streamlit para adaptação automática */
+    /* Usa variáveis de tema do Streamlit */
     .stApp {
         background-color: var(--background-color);
     }
 
-    /* Cabeçalho fixo do Streamlit */
     header[data-testid="stHeader"] {
         background-color: var(--secondary-background-color);
         border-bottom: 1px solid var(--border-color);
     }
 
-    /* Título do portal na barra superior (restaurado) */
+    /* Título do portal na barra superior */
     header[data-testid="stHeader"]::after {
         content: "Portal de Dashboards - Business Intelligence LATAM Parts & Services";
         position: absolute;
@@ -139,10 +134,22 @@ st.markdown(
         max-width: 70%;
     }
 
-    /* Remove título antigo (caso exista) */
-    .portal-header { display: none; }
+    /* Botão de recolher da sidebar sempre visível */
+    button[kind="sidebarCollapse"] {
+        visibility: visible !important;
+        opacity: 1 !important;
+        background-color: var(--secondary-background-color) !important;
+        border-radius: 0 8px 8px 0 !important;
+        left: 0 !important;
+        z-index: 1000 !important;
+    }
 
-    /* Títulos de seção */
+    /* Alternativa para versões mais recentes */
+    [data-testid="stSidebarCollapsedControl"] {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
     .section-title {
         color: var(--text-color);
         margin: 0.4rem 0 0.4rem 0;
@@ -151,12 +158,10 @@ st.markdown(
         line-height: 1.2;
     }
 
-    /* Ajuste do container principal */
     .block-container {
         padding-top: 3rem;
     }
 
-    /* Cartões */
     .dashboard-card {
         background: var(--secondary-background-color);
         border-radius: 10px;
@@ -201,20 +206,17 @@ st.markdown(
         opacity: 0.8;
     }
 
-    /* Links nos cards */
     .card-link {
         text-decoration: none;
     }
 
     .card-link:focus { outline: none; }
 
-    /* Colunas responsivas */
     div[data-testid="column"] {
         min-width: 160px;
         max-width: 220px;
     }
 
-    /* Sidebar customizada (respeita tema) */
     [data-testid="stSidebar"] {
         background-color: var(--secondary-background-color);
         border-right: 1px solid var(--border-color);
@@ -228,7 +230,6 @@ st.markdown(
         padding-left: 0.5rem;
     }
 
-    /* Ajuste para o radio button da sidebar */
     .stRadio > div {
         color: var(--text-color);
     }
@@ -238,12 +239,11 @@ st.markdown(
 )
 
 # ------------------------------------------------------------
-# Sidebar com navegação por áreas
+# Sidebar e conteúdo
 # ------------------------------------------------------------
 with st.sidebar:
     st.markdown('<div class="sidebar-title">📌 Áreas</div>', unsafe_allow_html=True)
     areas = list(DASHBOARDS.keys())
-    # Opção "Todos" para visualizar todas as áreas
     areas.insert(0, "Todos")
     selected_area = st.radio(
         "Selecione uma área",
@@ -252,9 +252,6 @@ with st.sidebar:
         label_visibility="collapsed",
     )
 
-# ------------------------------------------------------------
-# Exibição dos dashboards conforme a área selecionada
-# ------------------------------------------------------------
 if selected_area == "Todos":
     categories_to_show = DASHBOARDS.items()
 else:
