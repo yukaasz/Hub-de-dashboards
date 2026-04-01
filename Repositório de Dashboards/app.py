@@ -7,7 +7,7 @@ import streamlit as st
 
 # Configuração da página
 st.set_page_config(
-    page_title="Portal de Dashboards - Business Intelligence LATAM Parts & Services",
+    page_title="Portal de Dashboards - Business Intelligence and Strategic Marketing LATAM",
     page_icon="📊",
     layout="wide",
 )
@@ -46,6 +46,7 @@ def resolve_thumbnail_source(thumbnail: str) -> str:
     file_path = base_dir / thumbnail
 
     if not file_path.exists() or not file_path.is_file():
+        # Se não existir, gera placeholder
         return make_preview_data_uri("Prévia", accent="#6b7280")
 
     mime_type, _ = mimetypes.guess_type(file_path.name)
@@ -82,7 +83,7 @@ def render_dashboard_grid(dashboards: list[dict], columns_count: int = 4) -> Non
                     render_dashboard_card(row[idx])
 
 # ------------------------------------------------------------
-# Definição dos dashboards
+# Definição dos dashboards (categorias e itens)
 # ------------------------------------------------------------
 DASHBOARDS = {
     "Parts & Services": [
@@ -99,56 +100,54 @@ DASHBOARDS = {
             "thumbnail": "preview/Analise Risco de Churn.png",
         },
     ],
-    "Whole Goods": [],
+    "Wholegoods": [
+        # Adicione aqui os dashboards da área "Whole Goods"
+    ],
 }
 
 # ------------------------------------------------------------
-# CSS personalizado
+# CSS personalizado e Estrutura do Header
 # ------------------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Usa variáveis de tema do Streamlit */
     .stApp {
         background-color: var(--background-color);
     }
 
+    /* A SOLUÇÃO: Estilizar o Header NATIVO do Streamlit.
+       Ele já tem a inteligência de desviar da sidebar automaticamente! 
+    */
     header[data-testid="stHeader"] {
-        background-color: var(--secondary-background-color);
-        border-bottom: 1px solid var(--border-color);
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07) !important;
+        height: 4.5rem !important; /* Deixa a barra mais alta */
+        z-index: 9999 !important;
     }
 
-    /* Título do portal na barra superior */
+    /* Injetamos o seu título dentro do header nativo */
     header[data-testid="stHeader"]::after {
-        content: "Portal de Dashboards - Business Intelligence LATAM Parts & Services";
+        content: "Portal de Dashboards - Business Intelligence and Strategic Marketing LATAM";
         position: absolute;
-        left: 3.5rem;
+        left: 3.5rem; /* Deixa espaço pro botão hamburguer */
         top: 50%;
         transform: translateY(-50%);
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         font-weight: 700;
-        color: var(--text-color);
+        color: #0f172a;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 70%;
+        max-width: calc(100% - 120px); /* Evita sobrepor os botões da direita como 'Deploy' */
     }
 
-    /* Botão de recolher da sidebar sempre visível */
-    button[kind="sidebarCollapse"] {
-        visibility: visible !important;
-        opacity: 1 !important;
-        background-color: var(--secondary-background-color) !important;
-        border-radius: 0 8px 8px 0 !important;
-        left: 0 !important;
-        z-index: 1000 !important;
+    /* Empurra o resto da página pra baixo para o header não cobrir o conteúdo */
+    .block-container {
+        padding-top: 6rem !important;
     }
 
-    /* Alternativa para versões mais recentes */
-    [data-testid="stSidebarCollapsedControl"] {
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
+    .portal-header { display: none; }
 
     .section-title {
         color: var(--text-color);
@@ -156,10 +155,6 @@ st.markdown(
         font-size: 1.8rem !important;
         font-weight: 600;
         line-height: 1.2;
-    }
-
-    .block-container {
-        padding-top: 3rem;
     }
 
     .dashboard-card {
@@ -233,13 +228,27 @@ st.markdown(
     .stRadio > div {
         color: var(--text-color);
     }
+
+    .dashboard-card .card-title,
+    .dashboard-card .card-description {
+        color: #000000 !important;
+    }
+
+    .dashboard-card .card-description {
+        text-decoration: none !important;
+    }
+
+    .card-link,
+    .card-link * {
+        text-decoration: none !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # ------------------------------------------------------------
-# Sidebar e conteúdo
+# Sidebar com navegação por áreas
 # ------------------------------------------------------------
 with st.sidebar:
     st.markdown('<div class="sidebar-title">📌 Áreas</div>', unsafe_allow_html=True)
@@ -252,6 +261,9 @@ with st.sidebar:
         label_visibility="collapsed",
     )
 
+# ------------------------------------------------------------
+# Exibição dos dashboards conforme a área selecionada
+# ------------------------------------------------------------
 if selected_area == "Todos":
     categories_to_show = DASHBOARDS.items()
 else:
@@ -263,4 +275,3 @@ for category, dashboards in categories_to_show:
         render_dashboard_grid(dashboards)
     else:
         st.info("Nenhum dashboard disponível para esta área no momento.")
-
