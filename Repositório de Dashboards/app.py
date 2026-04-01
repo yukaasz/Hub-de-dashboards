@@ -90,6 +90,24 @@ DASHBOARDS = {
             "url": "https://app.powerbi.com/links/L3YExA4hJA?ctid=79310fb0-d39b-486b-b77b-25f3e0c82a0e&pbi_source=linkShare&bookmarkGuid=8fda7ab2-d756-41a9-88ca-0945da90fdb9",
             "thumbnail": "",
         },
+        {
+            "title": "Dashboard de Performance Sell-out PrimRetail",
+            "description": "Análise estratégica do fluxo de saída de mercadorias no varejo. Este BI monitora o desempenho de vendas na ponta (consumidor final) em tempo real.",
+            "url": "https://app.powerbi.com/groups/969f2a1e-3134-4620-a96e-fb9cdbe62757/reports/e8f64531-37c7-4140-8834-bd03046d6af4/1860df0450023c779cee?experience=power-bi",
+            "thumbnail": "",
+        },
+        {
+            "title": "Planejamento e Predição de Vendas 2026",
+            "description": "Modelo preditivo de inteligência comercial focado no cenário de 2026. Utiliza dados históricos e algoritmos de tendência para estimar o volume de sell-out, auxiliando na definição de metas, orçamentos e estratégias de crescimento para o próximo ano.",
+            "url": "https://app.powerbi.com/groups/969f2a1e-3134-4620-a96e-fb9cdbe62757/reports/62d53da2-2a07-4e33-b887-54d710bf394e/4a8711a6d66f4f119c9f?experience=power-bi",
+            "thumbnail": "",
+        },
+        {
+            "title": "Gestão de Eficiência de Estoque | Prim Connect (Beta)",
+            "description": "Painel de controle voltado para a redução de perdas e otimização de capital. Identifica produtos sem giro e excessos de inventário, oferecendo visibilidade crítica para ações de liquidação ou remanejamento dentro do ecossistema Prim Connect.",
+            "url": "https://app.powerbi.com/groups/969f2a1e-3134-4620-a96e-fb9cdbe62757/reports/9ac0937f-808b-4d16-a3a5-38b809fb5fb2/dcd1ab91bda0f295d995?experience=power-bi",
+            "thumbnail": "",
+        },
     ],
     "Wholegoods": [
         
