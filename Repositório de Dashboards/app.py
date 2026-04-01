@@ -41,7 +41,7 @@ def resolve_thumbnail_source(thumbnail: str) -> str:
     base_dir = Path(__file__).parent if "__file__" in globals() else Path.cwd()
     file_path = base_dir / thumbnail
     if not file_path.exists() or not file_path.is_file():
-        return make_preview_data_uri("Prévia", accent="#6b7280")
+        return make_preview_data_uri("", accent="#6b7280")
     mime_type, _ = mimetypes.guess_type(file_path.name)
     mime_type = mime_type or "application/octet-stream"
     encoded = base64.b64encode(file_path.read_bytes()).decode("utf-8")
@@ -82,13 +82,13 @@ DASHBOARDS = {
             "title": "Análise de Potencial",
             "description": "Análise de variação de potencial de vendas de peças de 2025x2026 e participação de mercado de 2024x2025.",
             "url": "https://app.powerbi.com/links/t2RjRREDQ9?ctid=79310fb0-d39b-486b-b77b-25f3e0c82a0e&pbi_source=linkShare",
-            "thumbnail": "preview/Variação potencial 25x26.png",
+            "thumbnail": "",        
         },
         {
             "title": "Análise de Risco de Churn",
             "description": "Análise de Risco de Churn de clientes.",
             "url": "https://app.powerbi.com/links/L3YExA4hJA?ctid=79310fb0-d39b-486b-b77b-25f3e0c82a0e&pbi_source=linkShare&bookmarkGuid=8fda7ab2-d756-41a9-88ca-0945da90fdb9",
-            "thumbnail": "preview/Analise Risco de Churn.png",
+            "thumbnail": "",
         },
     ],
     "Wholegoods": [
