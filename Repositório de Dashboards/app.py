@@ -5,7 +5,7 @@ from urllib.parse import quote
 
 import streamlit as st
 
-# Configuração da página
+# Configuração da página (PRECISA SER A PRIMEIRA LINHA)
 st.set_page_config(
     page_title="Portal de Dashboards - Business Intelligence and Strategic Marketing LATAM",
     page_icon="📊",
@@ -16,7 +16,6 @@ st.set_page_config(
 # Funções auxiliares
 # ------------------------------------------------------------
 def make_preview_data_uri(title: str, accent: str = "#b91c1c") -> str:
-    """Gera um thumbnail SVG em data URI para simular prévia de dashboard."""
     svg = f"""
     <svg xmlns='http://www.w3.org/2000/svg' width='480' height='270' viewBox='0 0 480 270'>
       <defs>
@@ -37,31 +36,24 @@ def make_preview_data_uri(title: str, accent: str = "#b91c1c") -> str:
     return f"data:image/svg+xml;utf8,{quote(svg)}"
 
 def resolve_thumbnail_source(thumbnail: str) -> str:
-    """Aceita URL/data URI ou caminho local e retorna um src válido para <img>."""
     if thumbnail.startswith(("http://", "https://", "data:image")):
         return thumbnail
-
-    # Tenta resolver o caminho absoluto em relação ao diretório do script
     base_dir = Path(__file__).parent if "__file__" in globals() else Path.cwd()
     file_path = base_dir / thumbnail
-
     if not file_path.exists() or not file_path.is_file():
-        # Se não existir, gera placeholder
         return make_preview_data_uri("Prévia", accent="#6b7280")
-
     mime_type, _ = mimetypes.guess_type(file_path.name)
     mime_type = mime_type or "application/octet-stream"
     encoded = base64.b64encode(file_path.read_bytes()).decode("utf-8")
     return f"data:{mime_type};base64,{encoded}"
 
 def render_dashboard_card(dashboard: dict) -> None:
-    """Renderiza um card de dashboard com thumbnail de prévia e link externo."""
     description = dashboard['description'].replace('"', '&quot;')
     st.markdown(
         f"""
         <a class="card-link" href="{dashboard['url']}" target="_blank" rel="noopener noreferrer">
             <article class="dashboard-card">
-                <img class="card-preview" src="{resolve_thumbnail_source(dashboard['thumbnail'])}" alt="Prévia do dashboard {dashboard['title']}" />
+                <img class="card-preview" src="{resolve_thumbnail_source(dashboard['thumbnail'])}" alt="Prévia" />
                 <div class="card-content">
                     <div class="card-title">{dashboard['title']}</div>
                     <div class="card-description">{description}</div>
@@ -73,7 +65,6 @@ def render_dashboard_card(dashboard: dict) -> None:
     )
 
 def render_dashboard_grid(dashboards: list[dict], columns_count: int = 4) -> None:
-    """Renderiza uma grade responsiva de dashboards usando st.columns."""
     rows = [dashboards[index : index + columns_count] for index in range(0, len(dashboards), columns_count)]
     for row in rows:
         columns = st.columns(columns_count, gap="medium")
@@ -83,7 +74,7 @@ def render_dashboard_grid(dashboards: list[dict], columns_count: int = 4) -> Non
                     render_dashboard_card(row[idx])
 
 # ------------------------------------------------------------
-# Definição dos dashboards (categorias e itens)
+# Base de Dados dos Dashboards
 # ------------------------------------------------------------
 DASHBOARDS = {
     "Parts & Services": [
@@ -101,146 +92,85 @@ DASHBOARDS = {
         },
     ],
     "Wholegoods": [
-        # Adicione aqui os dashboards da área "Whole Goods"
+        
     ],
 }
 
 # ------------------------------------------------------------
-# CSS personalizado e Estrutura do Header
+# CSS LIMPO: Sem tentar hackear o cabeçalho do Streamlit
 # ------------------------------------------------------------
 st.markdown(
     """
     <style>
-    .stApp {
-        background-color: var(--background-color);
+    /* 1. Transforma o fundo da barra superior numa cor 100% sólida e opaca */
+    [data-testid="stHeader"] {
+        background-color: var(--background-color) !important;
     }
 
-    /* A SOLUÇÃO: Estilizar o Header NATIVO do Streamlit.
-       Ele já tem a inteligência de desviar da sidebar automaticamente! 
-    */
-    header[data-testid="stHeader"] {
-        background-color: #ffffff !important;
-        border-bottom: 1px solid #e5e7eb !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07) !important;
-        height: 4.5rem !important; /* Deixa a barra mais alta */
-        z-index: 9999 !important;
-    }
-
-    /* Injetamos o seu título dentro do header nativo */
-    header[data-testid="stHeader"]::after {
-        content: "Portal de Dashboards - Business Intelligence and Strategic Marketing LATAM";
-        position: absolute;
-        left: 3.5rem; /* Deixa espaço pro botão hamburguer */
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #0f172a;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: calc(100% - 120px); /* Evita sobrepor os botões da direita como 'Deploy' */
-    }
-
-    /* Empurra o resto da página pra baixo para o header não cobrir o conteúdo */
+    /* 2. Remove o espaço vazio gigante do topo da página */
     .block-container {
-        padding-top: 6rem !important;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
     }
 
-    .portal-header { display: none; }
+    /* 3. Estilo do Título Principal (Agora ele fica na página, não flutuando) */
+    .titulo-principal {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--secondary-background-color);
+    }
 
+    /* 4. Estilos dos Cards (Mantidos intactos) */
     .section-title {
         color: var(--text-color);
-        margin: 0.4rem 0 0.4rem 0;
-        font-size: 1.8rem !important;
+        margin: 1rem 0 0.5rem 0;
+        font-size: 1.5rem !important;
         font-weight: 600;
-        line-height: 1.2;
     }
-
     .dashboard-card {
         background: var(--secondary-background-color);
-        border-radius: 10px;
+        border-radius: 8px;
         border: 1px solid var(--border-color);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         min-height: 150px;
         overflow: hidden;
-        margin-bottom: 0.75rem;
-        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        margin-bottom: 1rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
-
     .dashboard-card:hover {
         transform: translateY(-3px);
-        border-color: var(--primary-color);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+        border-color: #b91c1c;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
-
     .card-preview {
         width: 100%;
-        height: 90px;
+        height: 100px;
         object-fit: cover;
         border-bottom: 1px solid var(--border-color);
-        background: var(--secondary-background-color);
     }
-
-    .card-content {
-        padding: 0.55rem 0.65rem 0.65rem 0.65rem;
-    }
-
+    .card-content { padding: 0.75rem; }
     .card-title {
-        color: var(--text-color);
-        font-size: 1.0rem;
+        color: var(--text-color) !important;
+        font-size: 1rem;
         font-weight: 700;
-        margin-bottom: 0.2rem;
-        line-height: 1.15;
+        margin-bottom: 0.3rem;
     }
-
     .card-description {
-        color: var(--text-color);
+        color: var(--text-color) !important;
         font-size: 0.85rem !important;
-        text-decoration: none !important;
-        opacity: 0.8;
+        opacity: 0.8 !important;
     }
-
-    .card-link {
-        text-decoration: none;
-    }
-
-    .card-link:focus { outline: none; }
-
-    div[data-testid="column"] {
-        min-width: 160px;
-        max-width: 220px;
-    }
-
-    [data-testid="stSidebar"] {
-        background-color: var(--secondary-background-color);
-        border-right: 1px solid var(--border-color);
-    }
-
+    .card-link, .card-link * { text-decoration: none !important; }
+    
+    /* Título do menu lateral */
     .sidebar-title {
         font-size: 1.2rem;
         font-weight: 600;
         color: var(--text-color);
         margin-bottom: 1rem;
-        padding-left: 0.5rem;
-    }
-
-    .stRadio > div {
-        color: var(--text-color);
-    }
-
-    .dashboard-card .card-title,
-    .dashboard-card .card-description {
-        color: #000000 !important;
-    }
-
-    .dashboard-card .card-description {
-        text-decoration: none !important;
-    }
-
-    .card-link,
-    .card-link * {
-        text-decoration: none !important;
     }
     </style>
     """,
@@ -248,21 +178,21 @@ st.markdown(
 )
 
 # ------------------------------------------------------------
-# Sidebar com navegação por áreas
+# Título Principal da Página (Lugar correto, sem gambiarra)
+# ------------------------------------------------------------
+st.markdown('<div class="titulo-principal">Portal de Dashboards - Business Intelligence and Strategic Marketing LATAM</div>', unsafe_allow_html=True)
+
+# ------------------------------------------------------------
+# Sidebar com navegação
 # ------------------------------------------------------------
 with st.sidebar:
     st.markdown('<div class="sidebar-title">📌 Áreas</div>', unsafe_allow_html=True)
     areas = list(DASHBOARDS.keys())
     areas.insert(0, "Todos")
-    selected_area = st.radio(
-        "Selecione uma área",
-        areas,
-        index=0,
-        label_visibility="collapsed",
-    )
+    selected_area = st.radio("Selecione uma área", areas, index=0, label_visibility="collapsed")
 
 # ------------------------------------------------------------
-# Exibição dos dashboards conforme a área selecionada
+# Renderização das Seções
 # ------------------------------------------------------------
 if selected_area == "Todos":
     categories_to_show = DASHBOARDS.items()
@@ -274,4 +204,4 @@ for category, dashboards in categories_to_show:
     if dashboards:
         render_dashboard_grid(dashboards)
     else:
-        st.info("Nenhum dashboard disponível para esta área no momento.")
+        st.info("Nenhum dashboard disponível.")
